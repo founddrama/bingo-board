@@ -1,8 +1,11 @@
 export const FREE = 'FREE';
 
-export default function getBingoPhrases(bingoPhrases, freeSpace = FREE) {
-  const setOfPhrases = new Set();
-  let copyOfSource = Array.from(bingoPhrases);
+export default function getBingoPhrases(
+  bingoPhrases: string[],
+  freeSpace: string = FREE
+): string[] {
+  const setOfPhrases: Set<string> = new Set();
+  let copyOfSource: string[] = Array.from(bingoPhrases);
 
   while (setOfPhrases.size < 24) {
     const item = copyOfSource[Math.floor(Math.random() * copyOfSource.length)];

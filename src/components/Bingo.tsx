@@ -1,7 +1,8 @@
 import BingoSquare from './BingoSquare';
 import cyrb53 from '../utils/cyrb53-hash';
+import { BingoProps } from '../types';
 
-function Bingo({ phrases, squareClassResolver }) {
+function Bingo({ phrases, squareClassResolver }: BingoProps): JSX.Element {
   return (
     <main className="Bingo">
       {phrases.map(phrase => (
