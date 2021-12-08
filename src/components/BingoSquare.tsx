@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BingoSquareProps } from '../types';
 
-function BingoSquare({ phrase, squareClassResolver }: BingoSquareProps): JSX.Element {
-  const [ selected, setSelected ] = useState(false);
-  const onClick: React.MouseEventHandler = () => {
-    setSelected(!selected);
-  };
+type BingoSquareState = {
+  selected: boolean;
+};
 
-  const generateCssClassNames = (phrase: string): string => {
+class BingoSquare extends React.PureComponent<BingoSquareProps, BingoSquareState> {
+  constructor(props: BingoSquareProps) {
+    super(props);
+
+    this.state = { selected: false };
+  }
+
+  onClick: React.MouseEventHandler = () => {
+    const { selected } = this.state;
+    this.setState({ selected: !selected });
+  }
+
+  generateCssClassNames = (phrase: string): string => {
+    const { squareClassResolver } = this.props;
+
     const classNames = ['bingo-square'];
-    if (selected) {
+    if (this.state.selected) {
       classNames.push('selected');
     }
     
@@ -18,15 +30,19 @@ function BingoSquare({ phrase, squareClassResolver }: BingoSquareProps): JSX.Ele
     }
 
     return classNames.filter(cls => typeof cls === 'string').join(' ');
-  };
+  }
 
-  const classNames = generateCssClassNames(phrase);
+  render(): JSX.Element {
+    const { phrase } = this.props;
 
-  return (
-    <div className={classNames} onClick={onClick}>
-      <span>{phrase}</span>
-    </div>
-  );
+    const classNames = this.generateCssClassNames(phrase);
+
+    return (
+      <div className={classNames} onClick={this.onClick}>
+        <span>{phrase}</span>
+      </div>
+    );
+  }
 }
 
 export default BingoSquare;
