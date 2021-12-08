@@ -1,23 +1,18 @@
 import React from 'react';
-import { BingoSquareProps } from '../types';
 
-type BingoSquareState = {
-  selected: boolean;
-};
-
-class BingoSquare extends React.PureComponent<BingoSquareProps, BingoSquareState> {
-  constructor(props: BingoSquareProps) {
+class BingoSquare extends React.PureComponent {
+  constructor(props) {
     super(props);
 
     this.state = { selected: false };
   }
 
-  onClick: React.MouseEventHandler = () => {
+  onClick = () => {
     const { selected } = this.state;
     this.setState({ selected: !selected });
   }
 
-  generateCssClassNames = (phrase: string): string => {
+  generateCssClassNames = (phrase) => {
     const { squareClassResolver } = this.props;
 
     const classNames = ['bingo-square'];
@@ -32,7 +27,7 @@ class BingoSquare extends React.PureComponent<BingoSquareProps, BingoSquareState
     return classNames.filter(cls => typeof cls === 'string').join(' ');
   }
 
-  render(): JSX.Element {
+  render() {
     const { phrase } = this.props;
 
     const classNames = this.generateCssClassNames(phrase);

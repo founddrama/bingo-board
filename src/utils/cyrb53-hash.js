@@ -1,6 +1,6 @@
 // source: https://stackoverflow.com/a/52171480/623654
 
-export default function cyrb53(str: string, seed: number = 0): number {
+export default function cyrb53(str, seed = 0) {
   let h1 = 0xdeadbeef ^ seed;
   let h2 = 0x41c6ce57 ^ seed;
 

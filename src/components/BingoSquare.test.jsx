@@ -11,7 +11,7 @@ describe('<BingoSquare />', () => {
 
   test('should render .selected after being clicked', () => {
     const { container } = render(<BingoSquare phrase={phrase} />);
-    fireEvent.click(container.querySelector('.bingo-square')!);
+    fireEvent.click(container.querySelector('.bingo-square'));
 
     expect(container.querySelector('.selected')).toBeInTheDocument();
   });
