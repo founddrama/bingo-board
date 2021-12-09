@@ -15,10 +15,14 @@ jobs:
           node-version: '17.x'
 
       - name: Install packages
-        run: npm install
+        run: |
+          npm install
+          npm install -g typescript
 
       - name: Run tests
-        run: npm test
+        run: |
+          npm test
+          git restore tsconfig.json
 
       - name: Build package for dist
         env:
@@ -26,7 +30,7 @@ jobs:
         run: |
           pwd
           ls
-          npx tsc
+          tsc
 
       - name: "DEBUG: did tsc run? can we copy now?"
         run: |
