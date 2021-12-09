@@ -23,7 +23,9 @@ jobs:
       - name: Build package for dist
         env:
           NODE_OPTIONS: --openssl-legacy-provider
-        run: npm run compile
+        run: |
+          echo "Compiling from ${GITHUB_SHA::7}"
+          npm run compile
 
       - name: Extract version
         uses: Saionaro/extract-package-version@v1.0.6
@@ -34,6 +36,6 @@ jobs:
         with:
           add: 'dist'
           branch_mode: create
-          message: "Building dist from $GITHUB_SHA 📦"
+          message: "Building dist from ${GITHUB_SHA::7} 📦"
           tag: ${{ steps.extract-package-version.outputs.version }}
           push: true
