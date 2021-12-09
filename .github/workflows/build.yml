@@ -23,10 +23,7 @@ jobs:
       - name: Build package for dist
         env:
           NODE_OPTIONS: --openssl-legacy-provider
-        run: |
-          mkdir dist
-          npx tsc
-          cp src/style/index.css dist/style/index.css
+        run: npx tsc
 
       - name: Extract version
         uses: Saionaro/extract-package-version@v1.0.6
