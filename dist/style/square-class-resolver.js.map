@@ -1,1 +1,0 @@
-{"version":3,"file":"square-class-resolver.js","sourceRoot":"","sources":["../../src/style/square-class-resolver.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,IAAI,EAAE,MAAM,wBAAwB,CAAC;AAE9C,MAAM,CAAC,OAAO,UAAU,mBAAmB,CAAC,MAAc;IACxD,QAAQ,MAAM,EAAE;QACd,KAAK,IAAI;YACP,OAAO,aAAa,CAAC;QACvB,KAAK,KAAK;YACR,OAAO,KAAK,CAAC;QACf;YACE,OAAO,EAAE,CAAC;KACb;AACH,CAAC;AAAA,CAAC"}
