@@ -1,0 +1,39 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout repo under $GITHUB_WORKSPACE
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '17.x'
+
+      - name: Install packages
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build package for dist
+        env:
+          NODE_OPTIONS: --openssl-legacy-provider
+        run: npm run compile
+
+      - name: Extract version
+        uses: Saionaro/extract-package-version@v1.0.6
+        id: extract-package-version
+
+      - name: Commit dist and tag
+        uses: EndBug/add-and-commit@v7
+        with:
+          add: 'dist'
+          branch_mode: create
+          message: Building dist from $GITHUB_SHA 📦
+          tag: ${{ steps.extract-package-version.outputs.version }}
+          push: true
