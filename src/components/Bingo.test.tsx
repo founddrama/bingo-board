@@ -1,5 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import Bingo from './Bingo';
+import mockBaseSquareClassResolver from '../style/square-class-resolver';
+
+jest.mock('../style/square-class-resolver');
 
 describe('<Bingo />', () => {
   const phrases = [
@@ -21,5 +24,19 @@ describe('<Bingo />', () => {
     const squares = Array.from(container.querySelectorAll('.bingo-square'));
 
     expect(squares).toHaveLength(25);
+  });
+
+  test('should call base "square-class-resolver" when no squareClassResolver is provided', () => {
+    render(<Bingo phrases={phrases} />)
+
+    expect(mockBaseSquareClassResolver).toHaveBeenCalled();
+  });
+
+  test('should call squareClassResolver when it is provided', () => {
+    const mockCustomSquareClassProvider = jest.fn();
+    render(<Bingo phrases={phrases} squareClassResolver={mockCustomSquareClassProvider} />);
+
+    expect(mockCustomSquareClassProvider).toHaveBeenCalled();
+    expect(mockBaseSquareClassResolver).not.toHaveBeenCalled();
   });
 });

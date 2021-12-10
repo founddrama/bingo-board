@@ -1,6 +1,6 @@
 {
   "name": "bingo-board",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "private": true,
   "main": "dist/index.js",
   "dependencies": {
@@ -13,7 +13,7 @@
     "react-dom": "^17.0.2"
   },
   "scripts": {
-    "compile": "tsc && cp src/style/index.css dist/style/index.css",
+    "compile": "tsc -p ./tsconfig.compile.json && cp src/style/index.css dist/style/index.css",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

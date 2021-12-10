@@ -22,7 +22,7 @@ jobs:
         run: npm install
 
       - name: Run tests
-        run: npm test && git restore tsconfig.json
+        run: npm test
 
       - name: Build package for dist
         env:
