@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# bingo-board
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A [React](https://reactjs.org/) component for creating playable in-browser Bingo games.
+You know the kind I mean -- like on Oscar night? or during a Presidential debate?
 
-## Available Scripts
+## Using bingo-board
+
+A very vanilla game of Bingo:
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Bingo, { getBingoPhrases } from 'bingo-board';
+
+const phrases = [ /* your list of phrases -- try to give it at least 30 */ ];
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Bingo phrases={getBingoPhrases(phrases)} />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
+
+This will:
+
+1. The `<Bingo>` component will create your standard 5 × 5 grid
+2. `getBingoPhrases` will randomly select 24 items from `phrases`
+3. ...and then stick `FREE` in the middle.
+
+And that's it! Load it in your browser and click away to play.
+
+### Custom styles per square
+
+Let's say one of your phrases was `:fun:` and you wanted to style the text larger
+and in a specific color. You can add a `squareClassResolver` function for that.
+
+Let's revisit our vanilla example:
+
+```jsx
+import Bingo, { getBingoPhrases, squareClassResolver } from 'bingo-board';
+
+const phrases = [ ':fun:', /* and 30 more */ ];
+
+const customSquareClassResolver = (phrase) => {
+  // In this example, we want to keep the default styling for the 'FREE' square
+  let cssClass = squareClassResolver(phrase);
+
+  if (phrase === ':fun:') {
+    cssClass = `${cssClass} fun-style`;
+  }
+
+  return cssClass.trim();
+};
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Bingo
+      phrases={getBingoPhrases(phrases)}
+      squareClassResolver={customSquareClassResolver}
+    />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
+
+Here we get our Bingo board as before, but now we'll apply the `fun-style` CSS
+class to the square that gets the `:fun:` phrase. (I'll leave the actual CSS up
+to you.)
+
+## API
+
+### `<Bingo>`
+
+The main component. It takes the following props:
+
+- **`phrases`** (required) -- An array of strings that it uses to fill out the
+  board; use `getBingoPhrases` to randomize the list and add the `FREE` space
+- **`squareClassResolver`** (optional) -- A function applied to each phrase that
+  will output a CSS class for the square its in; use it to grant custom styles
+  to each square
+
+### `getBingoPhrases`
+
+Given a list of strings, `getBingoPhrases` will return a randomized subset of 24
+of them, with the `FREE` square phrase in the center of the list. Accepts an
+optional second parameter to override the text of the `FREE` space.
+
+### `squareClassResolver`
+
+Given a string, return a string to be applied as a CSS class to a square on the
+Bingo board. The library's default implementation returns `free-square` for the
+`FREE` square phrase, and an empty string for everything else.
+
+## Scripts
 
 In the project directory, you can run:
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Run those tests.
 
-### `npm run build`
+### `npm run compile`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Compiles the [TypeScript](https://www.typescriptlang.org/) into the `dist`
+folder and also copies the base CSS for the component.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**N.b.,** This is run as part of the continuous delivery script in the GitHub
+workflow. Do _not_ commit to the `dist` directory unless you know what you're
+doing.
