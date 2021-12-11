@@ -10,13 +10,13 @@ A very vanilla game of Bingo:
 ```jsx
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Bingo, { getBingoPhrases } from 'bingo-board';
+import Bingo from 'bingo-board';
 
 const phrases = [ /* your list of phrases -- try to give it at least 30 */ ];
 
 ReactDOM.render(
   <React.StrictMode>
-    <Bingo phrases={getBingoPhrases(phrases)} />
+    <Bingo phrases={phrases} />
   </React.StrictMode>,
   document.getElementById('root')
 );
@@ -25,7 +25,7 @@ ReactDOM.render(
 This will:
 
 1. The `<Bingo>` component will create your standard 5 × 5 grid
-2. `getBingoPhrases` will randomly select 24 items from `phrases`
+2. Internally, `getBingoPhrases` will randomly select 24 items from `phrases`
 3. ...and then stick `FREE` in the middle.
 
 And that's it! Load it in your browser and click away to play.
@@ -38,7 +38,7 @@ and in a specific color. You can add a `squareClassResolver` function for that.
 Let's revisit our vanilla example:
 
 ```jsx
-import Bingo, { getBingoPhrases, squareClassResolver } from 'bingo-board';
+import Bingo, { squareClassResolver } from 'bingo-board';
 
 const phrases = [ ':fun:', /* and 30 more */ ];
 
@@ -56,7 +56,7 @@ const customSquareClassResolver = (phrase) => {
 ReactDOM.render(
   <React.StrictMode>
     <Bingo
-      phrases={getBingoPhrases(phrases)}
+      phrases={phrases}
       squareClassResolver={customSquareClassResolver}
     />
   </React.StrictMode>,
@@ -75,16 +75,13 @@ to you.)
 The main component. It takes the following props:
 
 - **`phrases`** (required) -- An array of strings that it uses to fill out the
-  board; use `getBingoPhrases` to randomize the list and add the `FREE` space
+  board; internally, the component uses `getBingoPhrases` to randomize the list
+  and add the `FREE` space
+- **`freeSquare`** (optional) -- A string to use for the center 'FREE' square;
+  this will be `FREE` if not provided
 - **`squareClassResolver`** (optional) -- A function applied to each phrase that
   will output a CSS class for the square its in; use it to grant custom styles
   to each square
-
-### `getBingoPhrases`
-
-Given a list of strings, `getBingoPhrases` will return a randomized subset of 24
-of them, with the `FREE` square phrase in the center of the list. Accepts an
-optional second parameter to override the text of the `FREE` space.
 
 ### `squareClassResolver`
 

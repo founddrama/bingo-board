@@ -8,15 +8,22 @@ describe('<Bingo />', () => {
   const phrases = [
     'B1', 'I1', 'N1', 'G1', 'O1',
     'B2', 'I2', 'N2', 'G2', 'O2',
-    'B3', 'I3', 'FREE', 'G3', 'O3',
+    'B3', 'I3', 'N3', 'G3', 'O3',
     'B4', 'I4', 'N4', 'G4', 'O4',
     'B5', 'I5', 'N5', 'G5', 'O5',
+    'X1', 'X2', 'X3', 'X4', 'X5',
   ];
 
   test('renders FREE square', () => {
     render(<Bingo phrases={phrases} />);
-    const linkElement = screen.getByText(/FREE/i);
-    expect(linkElement).toBeInTheDocument();
+    const freeSquare = screen.getByText(/FREE/i);
+    expect(freeSquare).toBeInTheDocument();
+  });
+
+  test('should render a custom FREE square when provided', () => {
+    render(<Bingo phrases={phrases} freeSquare="FOO SQUARE" />);
+    const freeSquare = screen.getByText(/FOO SQUARE/i);
+    expect(freeSquare).toBeInTheDocument();
   });
 
   test('should render 25 Bingo squares', () => {
@@ -38,5 +45,11 @@ describe('<Bingo />', () => {
 
     expect(mockCustomSquareClassProvider).toHaveBeenCalled();
     expect(mockBaseSquareClassResolver).not.toHaveBeenCalled();
+  });
+
+  test('should throw a RangeError is phrases is too small', () => {
+    expect(() => {
+      render(<Bingo phrases={[]} />);
+    }).toThrow(`prop 'phrases' length should be greater than 24 but was 0`);
   });
 });
