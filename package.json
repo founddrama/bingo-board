@@ -1,6 +1,6 @@
 {
   "name": "bingo-board",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "main": "dist/index.js",
   "dependencies": {
@@ -13,11 +13,9 @@
     "react-dom": "^17.0.2"
   },
   "scripts": {
-    "compile": "tsc -p ./tsconfig.compile.json && cp src/style/index.css dist/style/index.css",
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "compile": "tsc -p ./tsconfig.compile.json && cp src/style/index.css dist/style/index.css",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": [
