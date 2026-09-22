@@ -4,7 +4,7 @@ import cyrb53 from '../utils/cyrb53-hash';
 import getBingoPhrases from '../utils/bingo-phrases';
 import baseSquareClassResolver from '../style/square-class-resolver';
 
-function Bingo({ phrases, freeSquare, squareClassResolver }: BingoProps): JSX.Element {
+function Bingo({ phrases, freeSquare, seed, squareClassResolver }: BingoProps): JSX.Element {
   const { length: minLength } = phrases;
   if (minLength < 24) {
     throw new RangeError(
@@ -12,7 +12,7 @@ function Bingo({ phrases, freeSquare, squareClassResolver }: BingoProps): JSX.El
     );
   }
 
-  const phrasesForBoard = getBingoPhrases(phrases, freeSquare);
+  const phrasesForBoard = getBingoPhrases(phrases, freeSquare, seed);
 
   if (!squareClassResolver) {
     squareClassResolver = baseSquareClassResolver;

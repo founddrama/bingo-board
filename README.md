@@ -79,6 +79,10 @@ The main component. It takes the following props:
   and add the `FREE` space
 - **`freeSquare`** (optional) -- A string to use for the center 'FREE' square;
   this will be `FREE` if not provided
+- **`seed`** (optional) -- A string or number used to seed the board's
+  randomization; the same `phrases` and `seed` will always produce the same
+  board, which makes it possible to share a specific board layout (e.g., via a
+  URL param). Omit it to get a freshly randomized board every time.
 - **`squareClassResolver`** (optional) -- A function applied to each phrase that
   will output a CSS class for the square its in; use it to grant custom styles
   to each square

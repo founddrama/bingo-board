@@ -52,4 +52,17 @@ describe('<Bingo />', () => {
       render(<Bingo phrases={[]} />);
     }).toThrow(`prop 'phrases' length should be greater than 24 but was 0`);
   });
+
+  test('same seed should render the same phrases in the same order', () => {
+    const first = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const firstText = Array.from(first.container.querySelectorAll('.bingo-square'))
+      .map(square => square.textContent);
+    first.unmount();
+
+    const second = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const secondText = Array.from(second.container.querySelectorAll('.bingo-square'))
+      .map(square => square.textContent);
+
+    expect(secondText).toEqual(firstText);
+  });
 });

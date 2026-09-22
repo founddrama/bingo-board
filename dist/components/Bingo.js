@@ -3,12 +3,12 @@ import BingoSquare from './BingoSquare';
 import cyrb53 from '../utils/cyrb53-hash';
 import getBingoPhrases from '../utils/bingo-phrases';
 import baseSquareClassResolver from '../style/square-class-resolver';
-function Bingo({ phrases, freeSquare, squareClassResolver }) {
+function Bingo({ phrases, freeSquare, seed, squareClassResolver }) {
     const { length: minLength } = phrases;
     if (minLength < 24) {
         throw new RangeError(`prop 'phrases' length should be greater than 24 but was ${minLength}`);
     }
-    const phrasesForBoard = getBingoPhrases(phrases, freeSquare);
+    const phrasesForBoard = getBingoPhrases(phrases, freeSquare, seed);
     if (!squareClassResolver) {
         squareClassResolver = baseSquareClassResolver;
     }
