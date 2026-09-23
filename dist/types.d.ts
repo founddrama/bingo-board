@@ -7,6 +7,8 @@ export declare type BingoProps = {
 };
 export declare type BingoSquareProps = {
     phrase: string;
+    selected?: boolean;
+    onToggle?: () => void;
     squareClassResolver?: squareClassResolver;
 };
 export {};

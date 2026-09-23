@@ -1,16 +1,18 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import React from 'react';
 class BingoSquare extends React.PureComponent {
-    constructor(props) {
-        super(props);
+    constructor() {
+        super(...arguments);
         this.onClick = () => {
-            const { selected } = this.state;
-            this.setState({ selected: !selected });
+            const { onToggle } = this.props;
+            if (onToggle) {
+                onToggle();
+            }
         };
         this.generateCssClassNames = (phrase) => {
-            const { squareClassResolver } = this.props;
+            const { selected, squareClassResolver } = this.props;
             const classNames = ['bingo-square'];
-            if (this.state.selected) {
+            if (selected) {
                 classNames.push('selected');
             }
             if (squareClassResolver && typeof squareClassResolver === 'function') {
@@ -18,7 +20,6 @@ class BingoSquare extends React.PureComponent {
             }
             return classNames.filter(cls => typeof cls === 'string').join(' ');
         };
-        this.state = { selected: false };
     }
     render() {
         const { phrase } = this.props;
