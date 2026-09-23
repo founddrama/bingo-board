@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "compile": "tsc -p ./tsconfig.compile.json && cp src/style/index.css dist/style/index.css",
+    "prepare": "npm run compile",
     "test": "react-scripts test"
   },
   "eslintConfig": {

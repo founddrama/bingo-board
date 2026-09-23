@@ -132,3 +132,46 @@ folder and also copies the base CSS for the component.
 **N.b.,** This is run as part of the continuous delivery script in the GitHub
 workflow. Do _not_ commit to the `dist` directory unless you know what you're
 doing.
+
+## Releasing / how consumers get updates
+
+`freshwood-bingo` and other consumers install this package straight from
+GitHub (e.g. `github:founddrama/bingo-board#semver:^1.0.0`), not from the npm
+registry. That means the version number and the git tag are what npm's
+semver resolution matches against -- there's no registry to fall back on.
+
+Here's the flow, and where it's bitten us before:
+
+1. **`package.json`'s `version` never bumps itself.** It's edited by hand
+   (or via `npm version`). The GitHub Actions workflow
+   (`.github/workflows/build.yml`) only *reads* whatever version is
+   currently there.
+2. On every push to `main`, that workflow compiles `dist/`, commits it (if
+   anything changed), and tags that commit with the current version.
+3. **If you tag a commit by hand *before* CI has rebuilt `dist/` for it**,
+   the tag ends up pointing at stale, out-of-sync `dist/` output -- the
+   tag's `src/` may have a feature that its `dist/` doesn't. This has
+   happened more than once (see the `1.3.1` tag, which shipped without the
+   "New board"/"Clear board" buttons even though `src/` already had them).
+4. **If you bump the version but don't change any *compiled* output**, the
+   "commit dist and tag" CI step has nothing new to commit -- and it
+   quietly skips creating the tag too, even though the job reports
+   success. A version bump alone is not guaranteed to produce a usable tag.
+
+**The safety net:** this package now has a `"prepare"` script
+(`npm run compile`). npm runs `prepare` automatically whenever a package is
+installed via a git URL -- so even if a tag's committed `dist/` is stale or
+missing, a consumer's `npm install` recompiles it from that tag's `src/`
+before use. This should make the specific "buttons are missing" class of bug
+impossible going forward, regardless of tagging mistakes on this end.
+
+Still, to cut a clean release:
+
+1. Make sure `dist/` is committed and matches `src/` for the commit you're
+   about to tag (`npm run compile` and check `git status`).
+2. Bump `version` in `package.json` in the *same* push as a real `dist/`
+   change, so CI's tag step has something to act on.
+3. Prefer letting CI create the tag. If you must tag manually, only do it
+   *after* confirming the CI run for that commit finished and actually
+   created the tag you expect (check the repo's Actions tab or
+   `git ls-remote --tags origin`).
