@@ -55,3 +55,29 @@ body {
   font-size: var(--enlarged);
   font-weight: bold;
 }
+
+.Bingo-actions {
+  width: calc(
+    (var(--square-size) * 5) +
+    (var(--small-space) * 4)
+  );
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--small-space) * 3);
+  margin: calc(var(--small-space) * 2) auto;
+}
+
+.Bingo-action {
+  font-size: 0.75rem;
+  padding: 2px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background-color: #f7f7f7;
+  color: #666;
+  cursor: pointer;
+}
+
+.Bingo-action:hover {
+  background-color: #eee;
+  color: #333;
+}

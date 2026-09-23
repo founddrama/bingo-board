@@ -86,10 +86,29 @@ The main component. It takes the following props:
   a `seed` also turns on persistence: checked-off squares are saved to
   `localStorage` under that seed, so reloading the page (with the same
   `phrases` and `seed`) restores the same checks. Without a `seed`, checked
-  squares are not persisted.
+  squares are not persisted -- unless the URL already has a `#` fragment when
+  the board loads (e.g., left there by an earlier "New board" click, see
+  below), in which case that fragment is used as the seed automatically.
 - **`squareClassResolver`** (optional) -- A function applied to each phrase that
   will output a CSS class for the square its in; use it to grant custom styles
   to each square
+- **`hideNewBoardButton`** (optional) -- Set to `true` to hide the "New board"
+  button
+- **`hideClearBoardButton`** (optional) -- Set to `true` to hide the "Clear
+  board" button
+
+### Board actions
+
+Beneath the grid, `<Bingo>` renders two small buttons:
+
+- **New board** -- reshuffles the phrases into a brand new board, clears any
+  checked squares, and writes the new seed to the URL's `#` fragment (so
+  reloading, bookmarking, or sharing the link brings back that same board)
+- **Clear board** -- unchecks every square on the *current* board, without
+  reshuffling
+
+Pass `hideNewBoardButton` and/or `hideClearBoardButton` to hide either (or
+both).
 
 ### `squareClassResolver`
 

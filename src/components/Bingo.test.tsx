@@ -16,6 +16,7 @@ describe('<Bingo />', () => {
 
   beforeEach(() => {
     window.localStorage.clear();
+    window.location.hash = '';
   });
 
   test('renders FREE square', () => {
@@ -130,6 +131,110 @@ describe('<Bingo />', () => {
     const seedTwoSquares = Array.from(seedTwo.container.querySelectorAll('.bingo-square'));
 
     seedTwoSquares.forEach(square => {
+      expect(square).not.toHaveClass('selected');
+    });
+  });
+
+  test('renders "New board" and "Clear board" buttons by default', () => {
+    render(<Bingo phrases={phrases} />);
+
+    expect(screen.getByRole('button', { name: 'New board' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Clear board' })).toBeInTheDocument();
+  });
+
+  test('hides the "New board" button when hideNewBoardButton is set', () => {
+    render(<Bingo phrases={phrases} hideNewBoardButton />);
+
+    expect(screen.queryByRole('button', { name: 'New board' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Clear board' })).toBeInTheDocument();
+  });
+
+  test('hides the "Clear board" button when hideClearBoardButton is set', () => {
+    render(<Bingo phrases={phrases} hideClearBoardButton />);
+
+    expect(screen.getByRole('button', { name: 'New board' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Clear board' })).not.toBeInTheDocument();
+  });
+
+  test('hides both buttons when both are set', () => {
+    render(<Bingo phrases={phrases} hideNewBoardButton hideClearBoardButton />);
+
+    expect(screen.queryByRole('button', { name: 'New board' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Clear board' })).not.toBeInTheDocument();
+  });
+
+  test('clicking "New board" reshuffles the board and updates the URL hash', () => {
+    const { container } = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const firstText = Array.from(container.querySelectorAll('.bingo-square'))
+      .map(square => square.textContent);
+
+    fireEvent.click(screen.getByRole('button', { name: 'New board' }));
+
+    const secondText = Array.from(container.querySelectorAll('.bingo-square'))
+      .map(square => square.textContent);
+
+    expect(secondText).not.toEqual(firstText);
+    expect(window.location.hash).not.toBe('');
+    expect(window.location.hash).not.toBe('#shared-seed');
+  });
+
+  test('clicking "New board" clears any checked squares', () => {
+    const { container } = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const squares = Array.from(container.querySelectorAll('.bingo-square'));
+    fireEvent.click(squares[0]);
+    expect(squares[0]).toHaveClass('selected');
+
+    fireEvent.click(screen.getByRole('button', { name: 'New board' }));
+
+    const squaresAfter = Array.from(container.querySelectorAll('.bingo-square'));
+    squaresAfter.forEach(square => {
+      expect(square).not.toHaveClass('selected');
+    });
+  });
+
+  test('a board loads the seed already present in the URL hash', () => {
+    window.location.hash = '#shared-seed';
+
+    const withHash = render(<Bingo phrases={phrases} />);
+    const withHashText = Array.from(withHash.container.querySelectorAll('.bingo-square'))
+      .map(square => square.textContent);
+    withHash.unmount();
+
+    const withSeedProp = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const withSeedPropText = Array.from(withSeedProp.container.querySelectorAll('.bingo-square'))
+      .map(square => square.textContent);
+
+    expect(withHashText).toEqual(withSeedPropText);
+  });
+
+  test('clicking "Clear board" resets checked squares without reshuffling', () => {
+    const { container } = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const squares = Array.from(container.querySelectorAll('.bingo-square'));
+    fireEvent.click(squares[0]);
+    fireEvent.click(squares[5]);
+    const textBefore = squares.map(square => square.textContent);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear board' }));
+
+    const squaresAfter = Array.from(container.querySelectorAll('.bingo-square'));
+    const textAfter = squaresAfter.map(square => square.textContent);
+
+    expect(textAfter).toEqual(textBefore);
+    squaresAfter.forEach(square => {
+      expect(square).not.toHaveClass('selected');
+    });
+  });
+
+  test('clearing the board persists after a reload', () => {
+    const first = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const firstSquares = Array.from(first.container.querySelectorAll('.bingo-square'));
+    fireEvent.click(firstSquares[0]);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear board' }));
+    first.unmount();
+
+    const second = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    Array.from(second.container.querySelectorAll('.bingo-square')).forEach(square => {
       expect(square).not.toHaveClass('selected');
     });
   });
