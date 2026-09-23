@@ -1,41 +1,37 @@
 import React from 'react';
 import { BingoSquareProps } from '../types';
 
-class BingoSquare extends React.PureComponent<BingoSquareProps> {
-  onClick: React.MouseEventHandler = () => {
-    const { onToggle } = this.props;
+function generateCssClassNames(
+  phrase: string,
+  selected: boolean | undefined,
+  squareClassResolver: BingoSquareProps['squareClassResolver']
+): string {
+  const classNames = ['bingo-square'];
+  if (selected) {
+    classNames.push('selected');
+  }
 
+  if (squareClassResolver && typeof squareClassResolver === 'function') {
+    classNames.push(squareClassResolver(phrase));
+  }
+
+  return classNames.filter(cls => typeof cls === 'string').join(' ');
+}
+
+function BingoSquare({ phrase, selected, onToggle, squareClassResolver }: BingoSquareProps): JSX.Element {
+  const onClick: React.MouseEventHandler = () => {
     if (onToggle) {
       onToggle();
     }
-  }
+  };
 
-  generateCssClassNames = (phrase: string): string => {
-    const { selected, squareClassResolver } = this.props;
+  const classNames = generateCssClassNames(phrase, selected, squareClassResolver);
 
-    const classNames = ['bingo-square'];
-    if (selected) {
-      classNames.push('selected');
-    }
-
-    if (squareClassResolver && typeof squareClassResolver === 'function') {
-      classNames.push(squareClassResolver(phrase));
-    }
-
-    return classNames.filter(cls => typeof cls === 'string').join(' ');
-  }
-
-  render(): JSX.Element {
-    const { phrase } = this.props;
-
-    const classNames = this.generateCssClassNames(phrase);
-
-    return (
-      <div className={classNames} onClick={this.onClick}>
-        <span>{phrase}</span>
-      </div>
-    );
-  }
+  return (
+    <div className={classNames} onClick={onClick}>
+      <span>{phrase}</span>
+    </div>
+  );
 }
 
-export default BingoSquare;
+export default React.memo(BingoSquare);
