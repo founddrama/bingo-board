@@ -43,3 +43,14 @@ jobs:
           message: "Building dist from ${{ steps.vars.outputs.sha_short }} 📦"
           tag: ${{ steps.extract-package-version.outputs.version }}
           push: true
+
+      - name: Ensure release tag exists
+        run: |
+          VERSION="${{ steps.extract-package-version.outputs.version }}"
+          if git ls-remote --exit-code --tags origin "refs/tags/${VERSION}" > /dev/null; then
+            echo "Tag ${VERSION} already exists on origin, nothing to do."
+          else
+            echo "Tag ${VERSION} is missing on origin (likely because dist/ had no changes to commit) -- creating it now."
+            git tag "${VERSION}"
+            git push origin "${VERSION}"
+          fi
