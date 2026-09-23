@@ -4,6 +4,8 @@ export declare type BingoProps = {
     freeSquare?: string;
     seed?: string | number;
     squareClassResolver?: squareClassResolver;
+    hideNewBoardButton?: boolean;
+    hideClearBoardButton?: boolean;
 };
 export declare type BingoSquareProps = {
     phrase: string;
