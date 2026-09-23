@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import Bingo from './Bingo';
 import mockBaseSquareClassResolver from '../style/square-class-resolver';
 
@@ -13,6 +13,10 @@ describe('<Bingo />', () => {
     'B5', 'I5', 'N5', 'G5', 'O5',
     'X1', 'X2', 'X3', 'X4', 'X5',
   ];
+
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
 
   test('renders FREE square', () => {
     render(<Bingo phrases={phrases} />);
@@ -64,5 +68,69 @@ describe('<Bingo />', () => {
       .map(square => square.textContent);
 
     expect(secondText).toEqual(firstText);
+  });
+
+  test('checked squares persist across a reload when a seed is provided', () => {
+    const first = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const firstSquares = Array.from(first.container.querySelectorAll('.bingo-square'));
+
+    fireEvent.click(firstSquares[0]);
+    fireEvent.click(firstSquares[5]);
+    expect(firstSquares[0]).toHaveClass('selected');
+    expect(firstSquares[5]).toHaveClass('selected');
+
+    first.unmount();
+
+    const second = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const secondSquares = Array.from(second.container.querySelectorAll('.bingo-square'));
+
+    expect(secondSquares[0]).toHaveClass('selected');
+    expect(secondSquares[5]).toHaveClass('selected');
+    expect(secondSquares[1]).not.toHaveClass('selected');
+  });
+
+  test('unchecking a square and reloading keeps it unchecked', () => {
+    const first = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const firstSquares = Array.from(first.container.querySelectorAll('.bingo-square'));
+
+    fireEvent.click(firstSquares[0]);
+    fireEvent.click(firstSquares[0]);
+    first.unmount();
+
+    const second = render(<Bingo phrases={phrases} seed="shared-seed" />);
+    const secondSquares = Array.from(second.container.querySelectorAll('.bingo-square'));
+
+    expect(secondSquares[0]).not.toHaveClass('selected');
+  });
+
+  test('checked squares do not persist across reloads when no seed is provided', () => {
+    const first = render(<Bingo phrases={phrases} />);
+    const firstSquares = Array.from(first.container.querySelectorAll('.bingo-square'));
+
+    fireEvent.click(firstSquares[0]);
+    expect(firstSquares[0]).toHaveClass('selected');
+
+    first.unmount();
+
+    const second = render(<Bingo phrases={phrases} />);
+    const secondSquares = Array.from(second.container.querySelectorAll('.bingo-square'));
+
+    secondSquares.forEach(square => {
+      expect(square).not.toHaveClass('selected');
+    });
+  });
+
+  test('checked squares are isolated per seed', () => {
+    const seedOne = render(<Bingo phrases={phrases} seed="seed-one" />);
+    const seedOneSquares = Array.from(seedOne.container.querySelectorAll('.bingo-square'));
+    fireEvent.click(seedOneSquares[0]);
+    seedOne.unmount();
+
+    const seedTwo = render(<Bingo phrases={phrases} seed="seed-two" />);
+    const seedTwoSquares = Array.from(seedTwo.container.querySelectorAll('.bingo-square'));
+
+    seedTwoSquares.forEach(square => {
+      expect(square).not.toHaveClass('selected');
+    });
   });
 });

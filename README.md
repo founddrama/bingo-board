@@ -82,7 +82,11 @@ The main component. It takes the following props:
 - **`seed`** (optional) -- A string or number used to seed the board's
   randomization; the same `phrases` and `seed` will always produce the same
   board, which makes it possible to share a specific board layout (e.g., via a
-  URL param). Omit it to get a freshly randomized board every time.
+  URL param). Omit it to get a freshly randomized board every time. Providing
+  a `seed` also turns on persistence: checked-off squares are saved to
+  `localStorage` under that seed, so reloading the page (with the same
+  `phrases` and `seed`) restores the same checks. Without a `seed`, checked
+  squares are not persisted.
 - **`squareClassResolver`** (optional) -- A function applied to each phrase that
   will output a CSS class for the square its in; use it to grant custom styles
   to each square

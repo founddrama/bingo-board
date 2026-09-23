@@ -9,5 +9,7 @@ export type BingoProps = {
 
 export type BingoSquareProps = {
   phrase: string;
+  selected?: boolean;
+  onToggle?: () => void;
   squareClassResolver?: squareClassResolver;
 };
